@@ -1,16 +1,19 @@
 package com.egor.task_manager.service
 
 import com.egor.task_manager.entities.Task
+import com.egor.task_manager.entities.TaskStatus
 import com.egor.task_manager.repository.TaskRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
-
 @Service
 class TaskService(private val taskRepository: TaskRepository) {
-    fun getAll(): List<Task> {
-        return taskRepository.findAll()
+    fun getAll(status: TaskStatus?): List<Task> {
+        return if (status != null) {
+            taskRepository.findAllByStatus(status)
+        } else {
+            taskRepository.findAll()
+        }
     }
-
     fun getById(id: Long): Task? {
         return taskRepository.findByIdOrNull(id)
     }
@@ -33,5 +36,4 @@ class TaskService(private val taskRepository: TaskRepository) {
     fun deleteAll() {
         taskRepository.deleteAll()
     }
-
 }

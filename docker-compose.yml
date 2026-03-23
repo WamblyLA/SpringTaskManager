@@ -1,0 +1,29 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: todo-postgres
+    environment:
+      POSTGRES_DB: task_manager
+      POSTGRES_USER: anton
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  task-manager:
+    build: .
+    container_name: task-manager-app
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/task_manager
+      SPRING_DATASOURCE_USERNAME: anton
+      SPRING_DATASOURCE_PASSWORD: password
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRINGDOC_SWAGGER_UI_PATH: /docs
+    depends_on:
+      - postgres
+    ports:
+      - "8080:8080"
+
+volumes:
+  db_data:
